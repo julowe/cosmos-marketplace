@@ -1,0 +1,223 @@
+{
+    "cosmos-installer": {
+        "form": [
+            {
+            "name": "nextSecret",
+            "label": "NEXTAUTH_SECRET",
+            "initialValue": "",
+            "type": "text"
+            },
+            {
+            "name": "meiliSecret",
+            "label": "MEILI_MASTER_KEY",
+            "initialValue": "",
+            "type": "text"
+            }
+        ]
+    },
+    "name": "linkwarden",
+    "services": {
+        "{ServiceName}-meili": {
+            "container_name": "{ServiceName}-meili",
+            "hostname": "{ServiceName}-meili",
+            "image": "getmeili/meilisearch:v1.12.8",
+            "restart": "unless-stopped",
+            "healthcheck": {
+                "test": [
+                    "CMD-SHELL",
+                    "curl --fail http://{ServiceName}:7700/health || exit 1"
+                ],
+                "interval": 40,
+                "timeout": 30,
+                "start_period": 60,
+                "retries": 3
+            },
+            "environment": [
+                "MEILI_MASTER_KEY={Context.meiliSecret}"
+            ],
+            "networks": {
+                "{ServiceName}": {}
+            },
+            "network_mode": "{ServiceName}",
+            "ports": [
+                "7700:7700/tcp"
+            ],
+            "volumes": [
+                {
+                "type": "volume",
+                "source": "{ServiceName}-meili",
+                "target": "/meili_data"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/localtime:ro",
+                "target": "/etc/localtime:ro"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/timezone:ro",
+                "target": "/etc/timezone:ro"
+                }
+            ],
+            "labels": {
+                "cosmos.stack": "{ServiceName}",
+                "cosmos-auto-update": "true",
+                "cosmos-icon": "https://ragdata.github.io/cosmos-servapps/servapps/linkwarden/icon.png",
+                "cosmos-force-network-mode": "{ServiceName}",
+                "cosmos-force-network-secured": "true"
+            }
+        },
+        "{ServiceName}-postgres": {
+            "container_name": "{ServiceName}-postgres",
+            "hostname": "{ServiceName}-postgres",
+            "image": "postgres:17.5-alpine",
+            "restart": "unless-stopped",
+            "healthcheck": {
+                "test": [
+                    "CMD-SHELL",
+                    "pg_isready -d linkwarden -U linkwarden-user || exit 1"
+                ],
+                "interval": 5,
+                "timeout": 5,
+                "start_period": 30,
+                "retries": 10
+            },
+            "environment": [
+                "POSTGRES_HOST_AUTH_METHOD=trust",
+                "POSTGRES_USER={ServiceName}-user",
+                "POSTGRES_PASSWORD={Passwords.0}",
+                "POSTGRES_DB={ServiceName}"
+            ],
+            "networks": {
+                "{ServiceName}": {}
+            },
+            "network_mode": "{ServiceName}",
+            "ports": [
+                "5432:5432/tcp"
+            ],
+            "volumes": [
+                {
+                "type": "volume",
+                "source": "{ServiceName}-postgres",
+                "target": "/var/lib/postgresql/data"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/localtime:ro",
+                "target": "/etc/localtime:ro"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/timezone:ro",
+                "target": "/etc/timezone:ro"
+                }
+            ],
+            "labels": {
+                "cosmos.stack": "{ServiceName}",
+                "cosmos-auto-update": "true",
+                "cosmos-icon": "https://ragdata.github.io/cosmos-servapps/servapps/linkwarden/icon.png",
+                "cosmos-force-network-mode": "{ServiceName}",
+                "cosmos-force-network-secured": "true"
+            }
+        },
+        "{ServiceName}": {
+            "container_name": "{ServiceName}",
+            "hostname": "{ServiceName}",
+            "image": "ghcr.io/linkwarden/linkwarden:latest",
+            "restart": "unless-stopped",
+            "healthcheck": {
+                "test": [
+                    "CMD-SHELL",
+                    "curl --fail http://{ServiceName}:3000 || exit 1"
+                ],
+                "interval": 40,
+                "timeout": 30,
+                "start_period": 60,
+                "retries": 3
+            },
+            "environment": [
+                "DATABASE_URL=postgresql://{ServiceName}-user:{Passwords.0}@{ServiceName}-postgres:5432/{ServiceName}",
+                "NEXTAUTH_SECRET={Context.nextSecret}",
+                "NEXTAUTH_URL=http://{ServiceName}:3000/api/v1/auth",
+                "MEILI_HOST=http://{ServiceName}-meili:7700"
+            ],
+            "networks": {
+                "{ServiceName}": {}
+            },
+            "network_mode": "{ServiceName}",
+            "ports": [
+                "3000:3000/tcp"
+            ],
+            "volumes": [
+                {
+                "type": "volume",
+                "source": "{ServiceName}-data",
+                "target": "/data/data"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/localtime:ro",
+                "target": "/etc/localtime:ro"
+                },
+                {
+                "type": "bind",
+                "source": "/etc/timezone:ro",
+                "target": "/etc/timezone:ro"
+                }
+            ],
+            "depends_on": {
+                "{ServiceName}-postgres": {
+                    "condition": "service_healthy"
+                },
+                "{ServiceName}-meili": {
+                    "condition": "service_healthy"
+                }
+            },
+            "routes": [
+                {
+                "name": "{ServiceName}",
+                "description": "Expose {ServiceName} to the web",
+                "useHost": true,
+                "target": "http://{ServiceName}:3000",
+                "mode": "SERVAPP",
+                "timeout": 14400000,
+                "throttlePerMinute": 12000,
+                "BlockCommonBots": true,
+                "Smartshield": { "Enabled": true }
+                }
+            ],
+            "labels": {
+                "cosmos.stack": "{ServiceName}",
+                "cosmos.stack.main": "true",
+                "cosmos-auto-update": "true",
+                "cosmos-icon": "https://ragdata.github.io/cosmos-servapps/servapps/linkwarden/icon.png",
+                "cosmos-force-network-mode": "{ServiceName}",
+                "cosmos-force-network-secured": "true"
+            }
+        }
+    },
+    "volumes": {
+        "{ServiceName}-data": {
+            "name": "{ServiceName}-data",
+            "driver": "local"
+        },
+        "{ServiceName}-postgres": {
+            "name": "{ServiceName}-postgres",
+            "driver": "local"
+        },
+        "{ServiceName}-meili": {
+            "name": "{ServiceName}-meili",
+            "driver": "local"
+        }
+    },
+    "networks": {
+        "{ServiceName}": {
+            "driver": "bridge",
+            "ipam": {
+                "config": [
+                    { "subnet": "172.16.5.0/24" }
+                ]
+            }
+        }
+    }
+}

@@ -2,14 +2,14 @@ name: Deploy static content to Pages
 
 on:
   push:
-    branches: ["master"] 
+    branches: ["master","dev"]
 
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write  
-  id-token: write 
+  pages: write
+  id-token: write
 
 concurrency:
   group: "pages"
@@ -31,12 +31,12 @@ jobs:
           node-version: '18'
 
       - name: Build static files (if needed)
-        run: node index.js 
+        run: node index.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.' 
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment

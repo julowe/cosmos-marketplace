@@ -10,7 +10,7 @@
   "minVersion": "0.18.0",
   "services": {
     "{ServiceName}": {
-      "image": "codeberg.org/forgejo/forgejo:11",
+      "image": "codeberg.org/forgejo/forgejo:13",
       "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "environment": [

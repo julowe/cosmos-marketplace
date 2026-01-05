@@ -19,7 +19,7 @@
   "name": "vikunja",
   "services": {
     "{ServiceName}": {
-      "image": "vikunja/vikunja:0.24.6",
+      "image": "vikunja/vikunja:latest",
       "hostname": "vikunja",
       "container_name": "vikunja",
       "volumes": [

@@ -99,6 +99,7 @@
       },
       "network_mode": "{ServiceName}-databases",
       "labels": {
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/vikunja/icon-mariadb.png",
         "cosmos-force-network-mode": "{ServiceName}-databases",
         "cosmos.stack": "{ServiceName}"
       }

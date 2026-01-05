@@ -22,7 +22,6 @@
       "image": "vikunja/vikunja:0.24.6",
       "hostname": "vikunja",
       "container_name": "vikunja",
-      "ports": ["3456:3456"],
       "volumes": [
         {
           "source": "{ServiceName}-files",

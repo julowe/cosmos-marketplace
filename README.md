@@ -16,4 +16,16 @@ either some random configuration I wanted, or are not stable enough for general
 use.
 
 - [Obsidian LiveSync Server](./servapps/obsidian-livesync-server/cosmos-compose.json)
+- [twitter-futzing](./servapps/twitter-futzing/cosmos-compose.json) - a very
+  hacky web UI to some python code I made/had an LLM make for a friend to parse
+  their twitter archive/export and do some random NLP stuff on it.
 - [Vikunja](./servapps/vikunja/cosmos-compose.json)
+
+## Works In Progress / Unstable Apps
+
+- [linkwarden](./servapps/linkwarden/cosmos-compose.json) - Tried to get
+  [meilisearch](https://www.meilisearch.com/docs/guides/docker)
+  working, no luck yet.
+- Actual-server - I left this as a template to remind myself how to make
+  ServApps. And also to have a known good ServApp to test installing through
+  the Cosmos UI Marketplace.

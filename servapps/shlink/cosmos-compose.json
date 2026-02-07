@@ -1,0 +1,155 @@
+{
+  "cosmos-installer": {
+    "form": [
+      {
+        "name": "geoliteLicenseKey",
+        "label": "GeoLite License Key (optional: but if not provided, geolocation of visitors can not be performed)",
+        "initialValue": "",
+        "type": "text"
+      },
+      {
+        "name": "linkToInfoEnvVars",
+        "type": "info",
+        "label": "Shlink supports a number of environment variables to customize its behavior. More info is provided here: https://shlink.io/documentation/environment-variables/"
+      }
+    ],
+    "post-install": [
+      {
+        "name": "shlinkPostInstallInfo",
+        "type": "info",
+        "label": "Shlink server, web UI/client, and mariadb are now running!"
+      },
+      {
+        "name": "shlinkPostInstallWarn",
+        "type": "warning",
+        "label": "Because this client UI already has the server's API key provided to it, this configuration file requires you to login with your Cosmos username and password. Otherwise anyone visiting the web UI/client could change your settings and links."
+      }
+    ]
+  },
+  "minVersion": "0.9.0",
+  "services": {
+    "{ServiceName}": {
+      "image": "shlinkio/shlink:stable",
+      "container_name": "{ServiceName}",
+      "restart": "unless-stopped",
+      "environment": [
+        {if Context.geoliteLicenseKey}
+          "GEOLITE_LICENSE_KEY={Context.geoliteLicenseKey}",
+        {/if}
+        "INITIAL_API_KEY={Passwords.0}",
+        "DB_DRIVER=maria",
+        "DB_NAME={ServiceName}",
+        "DB_USER={Passwords.1}",
+        "DB_PASSWORD={Passwords.2}",
+        "DB_HOST={ServiceName}-database",
+        "IS_HTTPS_ENABLED=true",
+        "DEFAULT_DOMAIN={Hostnames.{StaticServiceName}.{StaticServiceName}.host}"
+      ],
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "false",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-stack-main": "{ServiceName}",
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon.png"
+      },
+      "depends_on": {
+        "{ServiceName}-database": {
+          "condition": "service_healthy"
+        }
+      },
+      "routes": [
+        {
+          "name": "{ServiceName}",
+          "description": "Expose {ServiceName} to the web",
+          "useHost": true,
+          "target": "http://{ServiceName}:8080",
+          "mode": "SERVAPP",
+          "Timeout": 14400000,
+          "ThrottlePerMinute": 12000,
+          "BlockCommonBots": true,
+          "DisableHeaderHardening": true,
+          "SmartShield": {
+            "Enabled": true
+          }
+        }
+      ]
+    },
+    "{ServiceName}-database": {
+      "image": "mariadb:lts",
+      "container_name": "{ServiceName}-database",
+      "restart": "unless-stopped",
+      "environment": [
+        "MARIADB_DATABASE={ServiceName}",
+        "MARIADB_ROOT_PASSWORD={Passwords.3}",
+        "MARIADB_USER={Passwords.1}",
+        "MARIADB_PASSWORD={Passwords.2}",
+        "MYSQL_INITDB_SKIP_TZINFO=1",
+        "MARIADB_AUTO_UPGRADE=1"
+      ],
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "false",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon-mariadb.png"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ],
+        "interval": 60,
+        "timeout": 5,
+        "retries": 3,
+        "start_period": 60,
+        "start_interval": 10
+      },
+      "volumes": [
+        {
+          "source": "{ServiceName}-db-data",
+          "target": "/var/lib/mysql",
+          "type": "volume"
+        }
+      ]
+    },
+    "{ServiceName}-client": {
+      "image": "shlinkio/shlink-web-client:stable",
+      "container_name": "{ServiceName}-client",
+      "restart": "unless-stopped",
+      "environment": [
+        "SHLINK_SERVER_URL=https://{Hostnames.{StaticServiceName}.{StaticServiceName}.host}",
+        "SHLINK_SERVER_API_KEY={Passwords.0}",
+        "SHLINK_SERVER_NAME={ServiceName}"
+      ],
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "false",
+        "cosmos-stack": "{ServiceName}",
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon.png"
+      },
+      "depends_on": {
+        "{ServiceName}": {
+          "condition": "service_started"
+        }
+      },
+      "routes": [
+        {
+          "name": "{ServiceName}-client",
+          "description": "Expose {ServiceName}'s Web UI/Client to the web, behind Cosmos Auth",
+          "useHost": true,
+          "target": "http://{ServiceName}-client:8080",
+          "mode": "SERVAPP",
+          "Timeout": 14400000,
+          "ThrottlePerMinute": 12000,
+          "BlockCommonBots": true,
+          "AuthEnabled": true,
+          "SmartShield": {
+            "Enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

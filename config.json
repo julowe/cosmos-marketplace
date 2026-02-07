@@ -1,5 +1,5 @@
 {
-  "pageUrl": "https://julowe.github.io/cosmos-marketplace-dev",
-  "marketIndexUrl": "https://julowe.github.io/cosmos-marketplace-dev/servapps.json",
+  "pageUrl": "https://julowe.github.io/cosmos-marketplace",
+  "marketIndexUrl": "https://julowe.github.io/cosmos-marketplace/servapps.json",
   "servappsFolder": "servapps"
 }

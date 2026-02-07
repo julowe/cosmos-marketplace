@@ -2,9 +2,9 @@
   "cosmos-installer": {},
   "minVersion": "0.9.0",
   "services": {
-    "{ServiceName}-server": {
+    "{ServiceName}": {
       "image": "shlinkio/shlink:stable",
-      "container_name": "{ServiceName}-server",
+      "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "environment": [
         "IS_HTTPS_ENABLED=false",
@@ -18,7 +18,7 @@
       "routes": [
         {
           "name": "{ServiceName}",
-          "description": "Expose {ServiceName}-server to the web",
+          "description": "Expose {ServiceName} to the web",
           "useHost": true,
           "target": "http://{ServiceName}:8080",
           "mode": "SERVAPP",

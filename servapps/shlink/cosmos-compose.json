@@ -50,7 +50,7 @@
         "cosmos-auto-update": "false",
         "cosmos-stack": "{ServiceName}",
         "cosmos-stack-main": "{ServiceName}",
-        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace-dev/servapps/shlink/icon.png"
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon.png"
       },
       "depends_on": {
         "{ServiceName}-database": {
@@ -90,7 +90,7 @@
         "cosmos-force-network-secured": "true",
         "cosmos-auto-update": "false",
         "cosmos-stack": "{ServiceName}",
-        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace-dev/servapps/shlink/icon-mariadb.png"
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon-mariadb.png"
       },
       "healthcheck": {
         "test": [
@@ -127,7 +127,7 @@
         "cosmos-force-network-secured": "true",
         "cosmos-auto-update": "false",
         "cosmos-stack": "{ServiceName}",
-        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace-dev/servapps/shlink/icon.png"
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace/servapps/shlink/icon.png"
       },
       "depends_on": {
         "{ServiceName}": {

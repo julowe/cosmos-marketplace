@@ -1,6 +1,6 @@
 {
   "name": "Shlink",
-  "longDescription": "words",
+  "longDescription": "<p>Shlink is a simple yet powerful self-hosted URL shortener that enables you to keep control over all your shortened URLs, by serving them under your own domains.</p>     <p>This Cosmos Compose file configures a stack of the <a href='https://shlink.io/' target='_blank'>Shlink URL Shortener</a> app/server and a <a href='https://hub.docker.com/_/mariadb' target='_blank'>MariaDB</a> database. You can also select if you want to self-host <a href='https://shlink.io/documentation/shlink-web-client/' target='_blank'>Shlink's Web Client</a> in this stack, or if you only want to use <a href='https://app.shlink.io/' target='_blank'>the web client which Shlink host themselves</a>.</p>",
   "description": "Shlink is a URL shortener with an optionally self-host Web UI.",
   "tags": ["shlink", "links", "url", "shortener", "visit tracking", "visitor analytics"],
   "repository": "https://github.com/shlinkio/shlink",

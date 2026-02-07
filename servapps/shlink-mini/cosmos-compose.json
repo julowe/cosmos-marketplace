@@ -8,11 +8,6 @@
         "type": "text"
       },
       {
-        "name": "testVars",
-        "type": "info",
-        "label": "Quick Test: https://{Hostnames.{StaticServiceName}.{StaticServiceName}.host} https://{Hostnames.{StaticServiceName-client}.{StaticServiceName-client}.host} "
-      },
-      {
         "name": "linkToInfoEnvVars",
         "type": "info",
         "label": "Shlink supports a number of environment variables to customize its behavior. More info is provided here: https://shlink.io/documentation/environment-variables/"
@@ -22,7 +17,12 @@
       {
         "name": "shlinkPostInstallInfo",
         "type": "info",
-        "label": "Shlink server, client, and mariadb are now running! To access the web client, go to https://{Hostnames.{StaticServiceName}.{StaticServiceName}.host} (Note: Because this client UI already has the server's API key provided, this configuration file requires you to login with your Cosmos user and password. Otherwise anyone visiting this link could change your settings and links.) The shlink server's API key is: {Passwords.0} TODO: get correct client url"
+        "label": "Shlink server, web UI/client, and mariadb are now running!"
+      },
+      {
+        "name": "shlinkPostInstallWarn",
+        "type": "warning",
+        "label": "Because this client UI already has the server's API key provided to it, this configuration file requires you to login with your Cosmos username and password. Otherwise anyone visiting the web UI/client could change your settings and links."
       }
     ]
   },
@@ -137,10 +137,9 @@
       "routes": [
         {
           "name": "{ServiceName}-client",
-          "description": "Expose {ServiceName}-client to the web",
+          "description": "Expose {ServiceName}'s Web UI/Client to the web, behind Cosmos Auth",
           "useHost": true,
-          "target": "http://{ServiceName}:8080",
-          "hostSuffix": "-client",
+          "target": "http://{ServiceName}-client:8080",
           "mode": "SERVAPP",
           "Timeout": 14400000,
           "ThrottlePerMinute": 12000,

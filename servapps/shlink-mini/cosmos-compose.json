@@ -1,0 +1,35 @@
+{
+  "minVersion": "0.9.0",
+  "services": {
+    "{ServiceName}-server": {
+      "image": "shlinkio/shlink:stable",
+      "container_name": "{ServiceName}-server",
+      "restart": "unless-stopped",
+      "environment": [
+        "IS_HTTPS_ENABLED=false",
+        "DEFAULT_DOMAIN=https://{Hostnames.{StaticServiceName}.{StaticServiceName}.host}"
+      ],
+      "labels": {
+        "cosmos-force-network-secured": "true",
+        "cosmos-auto-update": "false",
+        "cosmos-icon": "https://julowe.github.io/cosmos-marketplace-dev/servapps/shlink/icon.png"
+      },
+      "routes": [
+        {
+          "name": "{ServiceName}",
+          "description": "Expose {ServiceName}-server to the web",
+          "useHost": true,
+          "target": "http://{ServiceName}:8080",
+          "mode": "SERVAPP",
+          "Timeout": 14400000,
+          "ThrottlePerMinute": 12000,
+          "BlockCommonBots": true,
+          "DisableHeaderHardening": true,
+          "SmartShield": {
+            "Enabled": true
+          }
+        }
+      ]
+    }
+  }
+}

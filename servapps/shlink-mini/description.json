@@ -1,0 +1,9 @@
+{
+  "name": "Shlink URL Shortener",
+  "longDescription": "words",
+  "description": "Shlink is a URL shortener with an optionally self-host Web UI.",
+  "tags": ["shlink", "links", "url", "shortener", "visit tracking", "visitor analytics"],
+  "repository": "https://github.com/shlinkio/shlink",
+  "image": "https://hub.docker.com/r/shlinkio/shlink",
+  "supported_architectures": ["amd64", "arm64"]
+}

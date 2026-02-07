@@ -7,10 +7,11 @@
       "container_name": "{ServiceName}",
       "restart": "unless-stopped",
       "environment": [
+        "INITIAL_API_KEY={Passwords.0}-{Passwords.1}",
         "DB_DRIVER=maria",
         "DB_NAME={ServiceName}",
-        "DB_USER={Passwords.1}",
-        "DB_PASSWORD={Passwords.2}",
+        "DB_USER={Passwords.2}",
+        "DB_PASSWORD={Passwords.3}",
         "DB_HOST={ServiceName}-database",
         "IS_HTTPS_ENABLED=true",
         "DEFAULT_DOMAIN={Hostnames.{StaticServiceName}.{StaticServiceName}.host}"
@@ -50,9 +51,9 @@
       "restart": "unless-stopped",
       "environment": [
         "MARIADB_DATABASE={ServiceName}",
-        "MARIADB_ROOT_PASSWORD={Passwords.3}",
-        "MARIADB_USER={Passwords.1}",
-        "MARIADB_PASSWORD={Passwords.2}",
+        "MARIADB_ROOT_PASSWORD={Passwords.4}",
+        "MARIADB_USER={Passwords.2}",
+        "MARIADB_PASSWORD={Passwords.3}",
         "MYSQL_INITDB_SKIP_TZINFO=1",
         "MARIADB_AUTO_UPGRADE=1"
       ],

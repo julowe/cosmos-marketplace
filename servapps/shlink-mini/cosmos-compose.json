@@ -12,8 +12,8 @@
         "DB_USER={Passwords.1}",
         "DB_PASSWORD={Passwords.2}",
         "DB_HOST={ServiceName}-database",
-        "DEFAULT_DOMAIN=https://{Hostnames.{StaticServiceName}.{StaticServiceName}.host}"
         "IS_HTTPS_ENABLED=true",
+        "DEFAULT_DOMAIN={Hostnames.{StaticServiceName}.{StaticServiceName}.host}"
       ],
       "labels": {
         "cosmos-force-network-secured": "true",
